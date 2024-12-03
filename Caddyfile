@@ -1,0 +1,67 @@
+{
+    auto_https off
+    debug
+
+    order authenticate before respond
+    order authorize before basicauth
+
+    security {
+        oauth identity provider idp1 {
+            driver generic
+            realm idp1
+            client_id the_client_id_for_idp1
+            client_secret the_secret_for_idp1
+            scopes openid email profile
+            metadata_url https://oauth.wiremockapi.cloud/.well-known/openid-configuration
+        }
+        oauth identity provider idp2 {
+            driver generic
+            realm idp2
+            client_id the_client_id_for_idp2
+            client_secret the_secret_for_idp2
+            scopes openid email profile
+            metadata_url https://oauth.wiremockapi.cloud/.well-known/openid-configuration
+        }
+        authentication portal authportal {
+            enable identity provider idp1
+            enable identity provider idp2
+            transform user {
+                match realm idp1
+                action add role idp1/user
+            }
+            transform user {
+                match realm idp2
+                action add role idp2/user
+            }
+            ui {
+                links {
+                    "whoami" /auth/whoami icon "las la-rocket"
+                    "root" / icon "las la-sitemap"
+                }
+            }
+        }
+        authorization policy authpolicy {
+            set auth url /auth
+            allow roles idp1/user idp2/user
+        }
+    }
+}
+
+:80 {
+    handle /auth* {
+        authenticate with authportal
+    }
+    handle /* {
+        authorize with authpolicy
+        header Content-Type text/html
+        respond <<HTML
+          <html>
+            <head><title>Carry auth test</title></head>
+            <body>
+              <h1>It works!</h1>
+              <a href=/auth/whoami>Check the auth token contents</a>
+            </body>
+          </html>
+          HTML 200
+    }
+}
