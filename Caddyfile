@@ -53,12 +53,17 @@
     handle /* {
         authorize with authpolicy
         header Content-Type text/html
+        templates
         respond <<HTML
           <html>
             <head><title>Carry auth test</title></head>
             <body>
-              <h1>It works!</h1>
-              <a href=/auth/whoami>Check the auth token contents</a>
+              <h1>Hello {{ placeholder "http.auth.user.name" }} &lt;{{ placeholder "http.auth.user.email" }}&gt;!</h1>
+              <p>Your ID is {{ placeholder "http.auth.user.id" }} and your roles are:
+              <ul>
+              {{range placeholder "http.auth.user.roles" | splitList " " }}  <li>{{ . }}{{end}}
+              </ul>
+              <p><a href=/auth/whoami>Check the raw auth token contents</a>
             </body>
           </html>
           HTML 200
