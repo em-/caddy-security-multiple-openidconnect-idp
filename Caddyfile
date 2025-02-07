@@ -56,7 +56,7 @@
         templates
         respond <<HTML
           <html>
-            <head><title>Carry auth test</title></head>
+            <head><title>Caddy auth test</title></head>
             <body>
               <h1>Hello {{ placeholder "http.auth.user.name" }} &lt;{{ placeholder "http.auth.user.email" }}&gt;!</h1>
               <p>Your ID is {{ placeholder "http.auth.user.id" }} and your roles are:
