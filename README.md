@@ -14,7 +14,7 @@ successfully authenticated against one of the two IdPs.
 
 Launch Caddy in a container using the [`Caddyfile`](Caddyfile) provided here:
 
-    docker run --rm -p 8080:80 -v ./Caddyfile:/etc/caddy/Caddyfile ghcr.io/authcrunch/authcrunch
+    docker run --rm -p 8080:80 -v $PWD:/etc/caddy/ ghcr.io/authcrunch/authcrunch caddy run --watch --config /etc/caddy/Caddyfile
     xdg-open http://localhost:8080
 
 Click on one of the two configured IdP, opening its login form. Enter any
